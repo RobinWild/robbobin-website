@@ -150,6 +150,12 @@
     inset: 0;
     pointer-events: none;
     z-index: 10;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  #cursor-companion.cursor-companion--hidden {
+    opacity: 0;
   }
 </style>
 </head>
@@ -182,6 +188,17 @@
     window.addEventListener('mousemove', function (e) {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
+    });
+
+    // The browser never reports cursor position once it leaves the
+    // viewport, so the companion would otherwise appear frozen in place.
+    // Fade it out instead, and back in once the cursor returns.
+    var companion = document.getElementById('cursor-companion');
+    document.documentElement.addEventListener('mouseleave', function () {
+      companion.classList.add('cursor-companion--hidden');
+    });
+    document.documentElement.addEventListener('mouseenter', function () {
+      companion.classList.remove('cursor-companion--hidden');
     });
 
     // Click-and-drag to scroll vertically, tablet-style: the page follows
