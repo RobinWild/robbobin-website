@@ -266,7 +266,12 @@
           }
         }
         refreshViewport();
-        window.addEventListener('resize', refreshViewport);
+        // A window 'resize' listener can fire before Spine's own internal
+        // canvas-resize handler has updated the canvas's actual size (e.g.
+        // entering/exiting fullscreen changes window height sharply), which
+        // would read stale dimensions here. Observing the canvas directly
+        // guarantees we recompute only after it has actually resized.
+        new ResizeObserver(refreshViewport).observe(player.canvas);
 
         var target = new spine.Vector3();
         // Runs before the skeleton's world transform is computed each frame, so we
