@@ -205,6 +205,15 @@
       success: function (player) {
         wizard = player;
 
+        // The character only ever renders at ~90px tall, but the canvas
+        // spans the full viewport, so full device-pixel-ratio resolution
+        // there wastes a lot of fill rate on transparent pixels. Cap it.
+        var maxDpr = 1;
+        var realGetSafeDevicePixelRatio = player.sceneRenderer.getSafeDevicePixelRatio.bind(player.sceneRenderer);
+        player.sceneRenderer.getSafeDevicePixelRatio = function (w, h) {
+          return Math.min(realGetSafeDevicePixelRatio(w, h), maxDpr);
+        };
+
         // Spine auto-frames the camera tightly around the character's own
         // bounds, scaling to fill the canvas — so the wizard's on-screen
         // size would otherwise depend on the window/canvas size. Instead we
@@ -240,7 +249,12 @@
           }
         }
         refreshViewport();
-        window.addEventListener('resize', refreshViewport);
+        // A window 'resize' listener can fire before Spine's own internal
+        // canvas-resize handler has updated the canvas's actual size (e.g.
+        // entering/exiting fullscreen changes window height sharply), which
+        // would read stale dimensions here. Observing the canvas directly
+        // guarantees we recompute only after it has actually resized.
+        new ResizeObserver(refreshViewport).observe(player.canvas);
 
         var target = new spine.Vector3();
         // Runs before the skeleton's world transform is computed each frame, so we
