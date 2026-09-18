@@ -119,7 +119,7 @@
   }
 
   #cursor-companion {
-    position: absolute;
+    position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 10;
@@ -149,24 +149,14 @@
   // it on touch devices, where there's no real cursor and the drag-scroll
   // below would fight with native touch scrolling.
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    // Page coordinates (not client/viewport coordinates), so the companion
-    // tracks a fixed spot on the page and scrolls with it, rather than
-    // staying glued to the same spot on screen. Tracked separately from
-    // scroll position because scrolling alone (no mousemove) still changes
-    // where the cursor sits on the page, and needs to update the target too.
-    var clientPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    var mouse = { x: 0, y: 0 };
-    function updateMouse() {
-      mouse.x = clientPos.x + window.scrollX;
-      mouse.y = clientPos.y + window.scrollY;
-    }
+    // Viewport (client) coordinates: #cursor-companion is position: fixed,
+    // so it always sits flush with the viewport — like a real cursor, it
+    // stays screen-anchored while the page scrolls underneath it.
+    var mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     window.addEventListener('mousemove', function (e) {
-      clientPos.x = e.clientX;
-      clientPos.y = e.clientY;
-      updateMouse();
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     });
-    window.addEventListener('scroll', updateMouse, { passive: true });
-    updateMouse();
 
     // Click-and-drag to scroll vertically, tablet-style: the page follows
     // the cursor's movement rather than scrolling opposite to it.
