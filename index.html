@@ -175,24 +175,14 @@
   // The wizard cursor companion is a mouse-only affectation — skip all of
   // it on touch devices, where there's no real cursor to replace.
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    // Page coordinates (not client/viewport coordinates), so the companion
-    // tracks a fixed spot on the page and scrolls with it, rather than
-    // staying glued to the same spot on screen. Tracked separately from
-    // scroll position because scrolling alone (no mousemove) still changes
-    // where the cursor sits on the page, and needs to update the target too.
-    var clientPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    var mouse = { x: 0, y: 0 };
-    function updateMouse() {
-      mouse.x = clientPos.x + window.scrollX;
-      mouse.y = clientPos.y + window.scrollY;
-    }
+    // Viewport (client) coordinates: the page never scrolls (fixed layout,
+    // overflow: hidden), and #cursor-companion is itself position: fixed,
+    // so it always sits flush with the viewport with no offset to account for.
+    var mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     window.addEventListener('mousemove', function (e) {
-      clientPos.x = e.clientX;
-      clientPos.y = e.clientY;
-      updateMouse();
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     });
-    window.addEventListener('scroll', updateMouse, { passive: true });
-    updateMouse();
 
     // Click-and-drag to scroll vertically, tablet-style: the page follows
     // the cursor's movement rather than scrolling opposite to it.
@@ -230,6 +220,15 @@
       showLoading: false,
       success: function (player) {
         wizard = player;
+
+        // The character only ever renders at ~90px tall, but the canvas
+        // spans the full viewport, so full device-pixel-ratio resolution
+        // there wastes a lot of fill rate on transparent pixels. Cap it.
+        var maxDpr = 1;
+        var realGetSafeDevicePixelRatio = player.sceneRenderer.getSafeDevicePixelRatio.bind(player.sceneRenderer);
+        player.sceneRenderer.getSafeDevicePixelRatio = function (w, h) {
+          return Math.min(realGetSafeDevicePixelRatio(w, h), maxDpr);
+        };
 
         // Spine auto-frames the camera tightly around the character's own
         // bounds, scaling to fill the canvas — so the wizard's on-screen
