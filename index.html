@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Blunder Construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Germania+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@esotericsoftware/spine-player@4.3.13/dist/spine-player.min.css">
+<style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #0d2f47;
+    font-family: 'Germania One', system-ui, sans-serif;
+  }
+
+  /* The wizard cursor companion is a mouse-only affectation; on touch
+     devices there's no real cursor to hide or replace. */
+  @media (hover: hover) and (pointer: fine) {
+    html, body {
+      cursor: none;
+    }
+  }
+
+  .stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .stage img.bg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /*
+    Positioned relative to the viewport (not the stage), because "cover"
+    crops the stage's left/right edges on typical wide windows. Vertical
+    position is tied to the character's vertical placement in the art,
+    which cover never crops on realistic (wider-than-tall) viewports.
+  */
+  .content {
+    position: fixed;
+    bottom: 4vh;
+    left: 50%;
+    width: min(48vw, 640px);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo-wrap {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(48vw, 640px);
+    transform: translate(-50%, -50%);
+  }
+
+  .logo-wrap img.logo {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 0.6vw 1.2vw rgba(0, 0, 0, 0.35));
+  }
+
+  .tagline {
+    margin-top: 1vw;
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-size: clamp(4rem, 3.2vw, 3.6rem);
+    color: #030a33;
+    letter-spacing: 0.00em;
+  }
+
+  .demo-btn {
+    margin-top: 1.2vw;
+    width: 60%;
+    aspect-ratio: 593 / 169;
+    background-image: url('demo-bt.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    display: block;
+  }
+
+  .demo-btn:hover {
+    transform: scale(1.08);
+  }
+
+  .demo-btn:active {
+    transform: scale(0.94);
+  }
+
+  .demo-btn::before,
+  .demo-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+  }
+
+  .demo-btn::before {
+    background-image: url('demo-hover.png');
+  }
+
+  .demo-btn::after {
+    background-image: url('demo-press.png');
+  }
+
+  .demo-btn:hover::before {
+    opacity: 1;
+  }
+
+  .demo-btn:active::after {
+    opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .demo-btn {
+      cursor: none;
+    }
+  }
+
+  #cursor-companion {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+  <div class="stage">
+    <img class="bg" src="background.png" alt="">
+  </div>
+
+  <div class="logo-wrap">
+    <img class="logo" src="logo.png" alt="Blunder Construction">
+  </div>
+
+  <div class="content">
+    <a href="https://robbobin.itch.io/blunder-construction-commercial?password=blunder" target="_blank" rel="noopener noreferrer" class="demo-btn" aria-label="Play the alpha demo"></a>
+    <div class="tagline">COMING SOON</div>
+  </div>
+
+  <div id="cursor-companion" aria-hidden="true"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@esotericsoftware/spine-player@4.3.13/dist/iife/spine-player.min.js"></script>
+  <script>
+  // The wizard cursor companion is a mouse-only affectation — skip all of
+  // it on touch devices, where there's no real cursor to replace.
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    // Page coordinates (not client/viewport coordinates), so the companion
+    // tracks a fixed spot on the page and scrolls with it, rather than
+    // staying glued to the same spot on screen. Tracked separately from
+    // scroll position because scrolling alone (no mousemove) still changes
+    // where the cursor sits on the page, and needs to update the target too.
+    var clientPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    var mouse = { x: 0, y: 0 };
+    function updateMouse() {
+      mouse.x = clientPos.x + window.scrollX;
+      mouse.y = clientPos.y + window.scrollY;
+    }
+    window.addEventListener('mousemove', function (e) {
+      clientPos.x = e.clientX;
+      clientPos.y = e.clientY;
+      updateMouse();
+    });
+    window.addEventListener('scroll', updateMouse, { passive: true });
+    updateMouse();
+
+    // Click-and-drag to scroll vertically, tablet-style: the page follows
+    // the cursor's movement rather than scrolling opposite to it.
+    var wizard = null;
+    var dragging = false;
+    var lastDragY = 0;
+    window.addEventListener('mousedown', function (e) {
+      dragging = true;
+      lastDragY = e.clientY;
+      document.body.style.userSelect = 'none';
+      if (wizard) wizard.setAnimation('base/spell', true);
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      window.scrollBy(0, lastDragY - e.clientY);
+      lastDragY = e.clientY;
+    });
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      document.body.style.userSelect = '';
+      if (wizard) wizard.setAnimation('empty', false);
+    }
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('mouseleave', endDrag);
+
+    new spine.SpinePlayer('cursor-companion', {
+      skeleton: 'spine/wizard-ragdoll-website.json',
+      atlasUrl: 'spine/wizard-ragdoll-website.atlas',
+      animation: 'empty',
+      defaultMix: 0.05,
+      alpha: true,
+      interactive: false,
+      showControls: false,
+      showLoading: false,
+      success: function (player) {
+        wizard = player;
+
+        // Spine auto-frames the camera tightly around the character's own
+        // bounds, scaling to fill the canvas — so the wizard's on-screen
+        // size would otherwise depend on the window size. Instead we fix
+        // the zoom (world units per CSS pixel) so its size on screen is
+        // constant regardless of window size, and recompute the viewport
+        // whenever the canvas resizes to keep that zoom constant. This uses
+        // CSS pixels as the closest web equivalent of "physical" size —
+        // browsers don't expose true physical/DPI-aware dimensions.
+        var pixelHeight = 90; // desired on-screen height, in CSS px
+        var offset = new spine.Vector2(), size = new spine.Vector2();
+        player.skeleton.getBounds(offset, size, [], player.sceneRenderer.skeletonRenderer.getSkeletonClipping());
+        var cx = offset.x + size.x / 2, cy = offset.y + size.y / 2;
+        var zoom = size.y / pixelHeight; // world units per CSS px, held constant
+
+        var v = player.config.viewport;
+        v.padLeft = v.padRight = v.padTop = v.padBottom = 0;
+        function refreshViewport() {
+          var w = zoom * player.canvas.clientWidth;
+          var h = zoom * player.canvas.clientHeight;
+          v.x = cx - w / 2;
+          v.y = cy - h / 2;
+          v.width = w;
+          v.height = h;
+          // Applied directly (not via setViewport) to avoid retriggering
+          // its viewport-transition blend on every resize.
+          if (player.currentViewport) {
+            player.currentViewport.x = v.x;
+            player.currentViewport.y = v.y;
+            player.currentViewport.width = v.width;
+            player.currentViewport.height = v.height;
+            player.currentViewport.padLeft = player.currentViewport.padRight = 0;
+            player.currentViewport.padTop = player.currentViewport.padBottom = 0;
+          }
+        }
+        refreshViewport();
+        window.addEventListener('resize', refreshViewport);
+
+        var target = new spine.Vector3();
+        // Runs before the skeleton's world transform is computed each frame, so we
+        // move the skeleton's root here, then let physics constraints react to it.
+        player.config.updateWorldTransform = function (p, delta) {
+          var skeleton = p.skeleton;
+          p.sceneRenderer.camera.screenToWorld(target.set(mouse.x, mouse.y, 0), p.canvas.clientWidth, p.canvas.clientHeight);
+          if (isFinite(target.x) && isFinite(target.y)) {
+            skeleton.x = target.x;
+            skeleton.y = target.y;
+          }
+          skeleton.updateWorldTransform(spine.Physics.update);
+        };
+      }
+    });
+  }
+  </script>
+
+</body>
+</html>
