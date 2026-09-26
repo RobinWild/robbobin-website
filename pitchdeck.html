@@ -21,9 +21,11 @@
   }
 
   /* The wizard cursor companion is a mouse-only affectation; on touch
-     devices there's no real cursor to hide or replace. */
+     devices there's no real cursor to hide or replace. The system cursor
+     stays until the wizard has actually loaded (html.wizard-ready), so a
+     slow or failed load never leaves the page with no cursor at all. */
   @media (hover: hover) and (pointer: fine) {
-    html, body {
+    html.wizard-ready, html.wizard-ready body {
       cursor: none;
     }
   }
@@ -40,10 +42,10 @@
     width: calc(var(--deck-native-width) * var(--deck-scale));
     max-width: 100%;
     margin: 0 auto;
-    /* Native pixel size of the two images stacked (1920 x 18591), so
+    /* Native pixel size of the two images stacked (1920 x 21955), so
        absolutely-positioned children can use percentages that stay
        aligned with the artwork at any --deck-scale. */
-    aspect-ratio: 1920 / 18591;
+    aspect-ratio: 1920 / 21955;
   }
 
   .deck img {
@@ -111,11 +113,131 @@
   }
 
   .deck-btn--1 {
-    top: 8.9291%; /* 1660 / 18591 */
+    left: 10.4688%; /* 201 / 1920 */
+    top: 8.2578%; /* 1813 / 21955 */
   }
 
   .deck-btn--2 {
-    top: 95.3419%; /* 17720 / 18591 */
+    left: 34.4271%; /* 661 / 1920 */
+    top: 95.5181%; /* 20971 / 21955 */
+  }
+
+  /* Video slot: the box matches the Photoshop region; the video inside
+     keeps its own aspect ratio (object-fit: contain) and is centred. */
+  .deck-video {
+    position: absolute;
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .deck-video video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .deck-video--commentary {
+    left: 14.4792%; /* 278 / 1920 */
+    top: 4.286%; /* 941 / 21955 */
+    width: 70.8333%; /* 1360 / 1920 */
+    aspect-ratio: 16 / 9;
+    pointer-events: auto;
+  }
+
+  /* Row of three small game videos, each 384 x 216 at Y 17543. */
+  .deck-video--game-row {
+    top: 79.9043%; /* 17543 / 21955 */
+    width: 20%; /* 384 / 1920 */
+    aspect-ratio: 16 / 9;
+    pointer-events: auto;
+  }
+
+  .deck-video--game-1 { left: 18.9583%; /* 364 / 1920 */ }
+  .deck-video--game-2 { left: 40%; /* 768 / 1920 */ }
+  .deck-video--game-3 { left: 61.0417%; /* 1172 / 1920 */ }
+
+  .deck-video iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .deck-video--stacking {
+    left: 15%; /* 288 / 1920 */
+    top: 11.3505%; /* 2492 / 21955 */
+    width: 70%; /* 1344 / 1920 */
+    aspect-ratio: 1344 / 518;
+  }
+
+  .deck-video--teetering {
+    left: 46.0938%; /* 885 / 1920 */
+    top: 14.9351%; /* 3279 / 21955 */
+    width: 47.3958%; /* 910 / 1920 */
+    aspect-ratio: 910 / 783;
+  }
+
+  .deck-video--tally {
+    left: 12.0313%; /* 231 / 1920 */
+    top: 18.1508%; /* 3985 / 21955 */
+    width: 34.7396%; /* 667 / 1920 */
+    aspect-ratio: 667 / 827;
+  }
+
+  /* tally.mp4 has a 1px black column baked into its right edge; clip
+     ~2 source pixels off so scaling can't bleed it back in. */
+  .deck-video--tally video {
+    clip-path: inset(0 0.3% 0 0);
+  }
+
+  .deck-video--contracts {
+    left: 12.1875%; /* 234 / 1920 */
+    top: 45.616%; /* 10015 / 21955 */
+    width: 36.875%; /* 708 / 1920 */
+    aspect-ratio: 1 / 1;
+  }
+
+  /* Info card + demo button, pinned to the viewport past the deck's right
+     edge. It overlaps the deck by --min-overlap where there's room, and
+     slides further over it on narrower windows to stay 16px clear of the
+     viewport edge. Sized in artwork pixels so it matches the deck's scale.
+     Hidden until the script below confirms it fits without overlapping
+     the deck by more than its data-max-overlap (in artwork pixels). */
+  .info-panel {
+    --art-px: calc(var(--deck-native-width) * var(--deck-scale) / 1920);
+    --min-overlap: calc(32 * var(--art-px));
+    position: fixed;
+    top: 50%;
+    left: min(
+      50% + min(var(--deck-native-width) * var(--deck-scale), 100%) / 2 - var(--min-overlap),
+      100% - 16px - 417 * var(--art-px)
+    );
+    transform: translateY(-50%);
+    width: calc(417 * var(--art-px));
+    z-index: 5;
+    visibility: hidden;
+  }
+
+  .info-panel--visible {
+    visibility: visible;
+  }
+
+  .info-panel img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .info-panel .deck-btn {
+    position: relative;
+    display: block;
+    left: auto;
+    width: 100%;
+    margin-top: calc(24 * var(--art-px));
   }
 
   #cursor-companion {
@@ -132,7 +254,7 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .deck-btn {
+    .wizard-ready .deck-btn {
       cursor: none;
     }
   }
@@ -143,9 +265,38 @@
   <div class="deck">
     <img src="pitchdeck1.webp" alt="Pitch deck, part 1" draggable="false">
     <img src="pitchdeck2.webp" alt="Pitch deck, part 2" draggable="false">
+    <div class="deck-video deck-video--commentary">
+      <iframe src="https://www.youtube-nocookie.com/embed/sZKA546h36s" title="Commentary video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div class="deck-video deck-video--stacking">
+      <video src="videos/stacking.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--teetering">
+      <video src="videos/teetering.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--tally">
+      <video src="videos/tally.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--contracts">
+      <video src="videos/contracts.mp4" muted loop playsinline preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--game-row deck-video--game-1">
+      <video src="videos/chicken-x-and-friends.mp4" title="Chicken X &amp; Friends" muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--game-row deck-video--game-2">
+      <video src="videos/wild-fusion.mp4" title="Wild Fusion" muted loop playsinline controls preload="metadata"></video>
+    </div>
+    <div class="deck-video deck-video--game-row deck-video--game-3">
+      <video src="videos/temple-treasure.mp4" title="Temple Treasure" muted loop playsinline controls preload="metadata"></video>
+    </div>
     <a href="https://robbobin.itch.io/blunder-construction-commercial?password=blunder" target="_blank" rel="noopener noreferrer" class="deck-btn deck-btn--1" aria-label="Play the alpha demo"></a>
     <a href="https://robbobin.itch.io/blunder-construction-commercial?password=blunder" target="_blank" rel="noopener noreferrer" class="deck-btn deck-btn--2" aria-label="Play the alpha demo"></a>
   </div>
+
+  <aside class="info-panel" data-max-overlap="160">
+    <img src="info.png" alt="Blunder Construction. Target release date: July 2027. In development since July 2026. Core dev team: 1. Funding target: $85,100. Email: hello@robbobin.com" draggable="false">
+    <a href="https://robbobin.itch.io/blunder-construction-commercial?password=blunder" target="_blank" rel="noopener noreferrer" class="deck-btn" aria-label="Play the alpha demo"></a>
+  </aside>
 
   <div id="cursor-companion" aria-hidden="true"></div>
 
@@ -171,8 +322,25 @@
     document.documentElement.addEventListener('mouseleave', function () {
       companion.classList.add('cursor-companion--hidden');
     });
-    document.documentElement.addEventListener('mouseenter', function () {
-      companion.classList.remove('cursor-companion--hidden');
+    // Same over embedded iframes (the YouTube player): they're cross-origin,
+    // so the page receives no mouse events while the cursor is inside one.
+    // The browser still dispatches the crossing movement itself to the page,
+    // targeted at the <iframe> element, so that one must not count as the
+    // cursor coming back; any other mousemove means it's back with us.
+    function overFrame(e) {
+      return e.target instanceof HTMLIFrameElement;
+    }
+    window.addEventListener('mouseover', function (e) {
+      if (!overFrame(e)) return;
+      companion.classList.add('cursor-companion--hidden');
+      endDrag();
+    });
+    window.addEventListener('mousemove', function (e) {
+      if (overFrame(e)) {
+        companion.classList.add('cursor-companion--hidden');
+      } else {
+        companion.classList.remove('cursor-companion--hidden');
+      }
     });
 
     // Click-and-drag to scroll vertically, tablet-style: the page follows
@@ -195,10 +363,34 @@
       if (!dragging) return;
       dragging = false;
       document.body.style.userSelect = '';
-      if (wizard) wizard.setAnimation('empty', false);
+      restAnimation();
     }
     window.addEventListener('mouseup', endDrag);
     window.addEventListener('mouseleave', endDrag);
+
+    // Raise the wand while hovering a demo button. The drag spell takes
+    // priority; once it ends, restAnimation() picks the hover pose back up
+    // if the cursor is still over a button.
+    var hoverAnimation = 'aim/wandRaised';
+    var hoveringButton = false;
+    function restAnimation() {
+      if (!wizard) return;
+      if (hoveringButton && wizard.skeleton.data.findAnimation(hoverAnimation)) {
+        wizard.setAnimation(hoverAnimation, true);
+      } else {
+        wizard.setAnimation('empty', false);
+      }
+    }
+    document.querySelectorAll('.deck-btn').forEach(function (btn) {
+      btn.addEventListener('mouseenter', function () {
+        hoveringButton = true;
+        if (!dragging) restAnimation();
+      });
+      btn.addEventListener('mouseleave', function () {
+        hoveringButton = false;
+        if (!dragging) restAnimation();
+      });
+    });
 
     new spine.SpinePlayer('cursor-companion', {
       skeleton: 'spine/wizard-ragdoll-website.json',
@@ -211,6 +403,7 @@
       showLoading: false,
       success: function (player) {
         wizard = player;
+        document.documentElement.classList.add('wizard-ready');
 
         // The character only ever renders at ~90px tall, but the canvas
         // spans the full viewport, so full device-pixel-ratio resolution
@@ -278,6 +471,70 @@
       }
     });
   }
+  </script>
+  <script>
+  // Show the info panel only when it fits: CSS already keeps it clear of
+  // the viewport's right edge, so check it isn't pushed over the deck by
+  // more than data-max-overlap artwork pixels, and that it fits vertically.
+  // It keeps its layout while hidden (visibility, not display), so its
+  // rect is always measurable.
+  (function () {
+    var deck = document.querySelector('.deck');
+    var panel = document.querySelector('.info-panel');
+    var maxOverlap = parseFloat(panel.dataset.maxOverlap);
+    var gutter = 16;
+    function update() {
+      var d = deck.getBoundingClientRect();
+      var r = panel.getBoundingClientRect();
+      var artPx = d.width / 1920;
+      var fits = d.right - r.left <= maxOverlap * artPx &&
+                 r.height + gutter * 2 <= window.innerHeight;
+      panel.classList.toggle('info-panel--visible', fits);
+    }
+    window.addEventListener('resize', update);
+    new ResizeObserver(update).observe(panel);
+    update();
+  })();
+  </script>
+  <script>
+  // Only play deck videos while they're on screen. They carry no autoplay
+  // attribute; this observer starts them as they scroll into view and
+  // pauses them as they leave. A video the viewer paused themselves (via
+  // controls) stays paused rather than resuming on the next scroll-in.
+  (function () {
+    var videos = document.querySelectorAll('.deck-video video');
+    var userPaused = new WeakSet();
+    var autoPausing = new WeakSet();
+
+    videos.forEach(function (video) {
+      video.addEventListener('pause', function () {
+        if (autoPausing.has(video)) {
+          autoPausing.delete(video);
+        } else {
+          userPaused.add(video);
+        }
+      });
+      video.addEventListener('play', function () {
+        userPaused.delete(video);
+      });
+    });
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var video = entry.target;
+        if (entry.isIntersecting) {
+          if (video.paused && !userPaused.has(video)) {
+            video.play().catch(function () {});
+          }
+        } else if (!video.paused) {
+          autoPausing.add(video);
+          video.pause();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    videos.forEach(function (video) { observer.observe(video); });
+  })();
   </script>
 
 </body>

@@ -1,6 +1,6 @@
 {
 "skeleton": {
-	"hash": "GRbZofO3zKw",
+	"hash": "B3u9Z7j7bCg",
 	"spine": "4.3.26",
 	"x": -243.27475,
 	"y": -486.3288,
@@ -154,8 +154,8 @@
 		"parent": "hatBrim",
 		"length": 26.756195,
 		"rotation": 178.7199,
-		"x": -0.17622375,
-		"y": -0.2101183,
+		"x": -7.639114,
+		"y": 6.608607,
 		"color": "abe323ff"
 	},
 	{
@@ -1300,6 +1300,120 @@
 				]
 			}
 		]
+	},
+	"aim/wandRaised": {
+		"slots": {
+			"assets-bag-flap2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-bag-main2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-bag-strap2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-body-torso2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-cape-front2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-hand2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-hat-brim2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-hat-top2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-leg3": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-leg4": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-sleeve2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"assets-wand2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"eyeRBase": {
+				"rgba": [
+					{ "color": "86ff4eff" }
+				]
+			},
+			"eyeRBase5": {
+				"rgba": [
+					{ "color": "86ff4eff" }
+				]
+			},
+			"handR2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			},
+			"sleeveR2": {
+				"rgba": [
+					{ "color": "41ff28ff" }
+				]
+			}
+		},
+		"bones": {
+			"armL": {
+				"rotate": [
+					{ "value": -9.730665 }
+				]
+			},
+			"armR": {
+				"rotate": [
+					{ "value": -84.58343 }
+				]
+			},
+			"handR": {
+				"rotate": [
+					{ "value": 58.16223 }
+				]
+			},
+			"hatBrim": {
+				"rotate": [
+					{ "value": -7.23996 }
+				],
+				"translate": [
+					{ "x": 8.152435 }
+				]
+			},
+			"torso": {
+				"rotate": [
+					{ "value": -5.391784 }
+				]
+			}
+		}
 	},
 	"base/breathe": {
 		"bones": {
