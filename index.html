@@ -6,7 +6,7 @@
 <title>Blunder Construction</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Germania+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Germania+One&family=Nunito:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@esotericsoftware/spine-player@4.3.13/dist/spine-player.min.css">
 <style>
   * { box-sizing: border-box; }
@@ -58,6 +58,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Lets everything in the group size against the group's own width
+       (cqw), so the button, tagline and form scale together. */
+    container-type: inline-size;
   }
 
   .logo-wrap {
@@ -76,15 +79,16 @@
   }
 
   .tagline {
-    margin-top: 1vw;
+    margin-top: 1cqw;
     font-family: 'Germania One', system-ui, sans-serif;
-    font-size: clamp(4rem, 3.2vw, 3.6rem);
+    font-size: 10cqw;
+    line-height: 1;
     color: #030a33;
     letter-spacing: 0.00em;
   }
 
   .demo-btn {
-    margin-top: 1.2vw;
+    margin-top: 1.2cqw;
     width: 60%;
     aspect-ratio: 593 / 169;
     background-image: url('demo-bt.png');
@@ -145,6 +149,95 @@
     }
   }
 
+  .newsletter {
+    margin-top: 2.5cqw;
+    width: 86cqw;
+    display: flex;
+    gap: 2cqw;
+    font-family: 'Germania One', system-ui, sans-serif;
+  }
+
+  .newsletter input,
+  .newsletter button {
+    font-family: inherit;
+    font-size: 4.4cqw;
+    height: 10cqw;
+    border: 0.7cqw solid #030a33;
+    border-radius: 2cqw;
+    box-shadow: 0 1cqw 0 #030a33;
+    outline: none;
+  }
+
+  .newsletter input {
+    flex: 1;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 3.6cqw;
+    min-width: 0;
+    padding: 0 3cqw;
+    color: #030a33;
+    background: #fdf8e8;
+  }
+
+  .newsletter input::placeholder {
+    color: #030a33;
+    opacity: 0.45;
+  }
+
+  .newsletter input:focus {
+    background: #fff;
+    border-color: #c9284d;
+  }
+
+  .newsletter button {
+    padding: 0 4cqw;
+    color: #fff;
+    background: #c9284d;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0.4cqw 0 #030a33;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .newsletter button:hover {
+    transform: scale(1.06);
+  }
+
+  .newsletter button:active {
+    transform: scale(0.94);
+  }
+
+  .newsletter button:disabled {
+    opacity: 0.6;
+    transform: none;
+  }
+
+  .newsletter-msg {
+    margin-top: 2.5cqw;
+    min-height: 1em;
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-size: 4.4cqw;
+    color: #030a33;
+    text-align: center;
+  }
+
+  .newsletter-msg:empty {
+    display: none;
+  }
+
+  /* The form needs a real cursor: text inputs are unusable without a caret
+     position hint, and the wizard alone doesn't show one. */
+  @media (hover: hover) and (pointer: fine) {
+    .newsletter, .newsletter * {
+      cursor: auto;
+    }
+    .newsletter input {
+      cursor: text;
+    }
+    .newsletter button {
+      cursor: pointer;
+    }
+  }
+
   #cursor-companion {
     position: fixed;
     inset: 0;
@@ -172,9 +265,47 @@
   <div class="content">
     <a href="https://robbobin.itch.io/blunder-construction-commercial?password=blunder" target="_blank" rel="noopener noreferrer" class="demo-btn" aria-label="Play the alpha demo"></a>
     <div class="tagline">COMING SOON</div>
+    <form class="newsletter" action="https://app.kit.com/forms/10024227/subscriptions" method="post">
+      <input type="email" name="email_address" placeholder="Subscribe to receive updates" aria-label="Email address" required>
+      <button type="submit">SIGN UP</button>
+    </form>
+    <div class="newsletter-msg" role="status"></div>
   </div>
 
   <div id="cursor-companion" aria-hidden="true"></div>
+
+  <script>
+  // Submit the Kit newsletter form in place rather than navigating to Kit.
+  // Without JS the form still posts normally.
+  (function () {
+    var form = document.querySelector('.newsletter');
+    var msg = document.querySelector('.newsletter-msg');
+    var button = form.querySelector('button');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      button.disabled = true;
+      msg.textContent = '';
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.status === 'success' || data.status === 'quarantined') {
+            form.style.display = 'none';
+            msg.textContent = 'Thanks! Check your email to confirm.';
+          } else {
+            throw new Error();
+          }
+        })
+        .catch(function () {
+          msg.textContent = 'Something went wrong. Please try again.';
+          button.disabled = false;
+        });
+    });
+  })();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@esotericsoftware/spine-player@4.3.13/dist/iife/spine-player.min.js"></script>
   <script>
@@ -207,6 +338,9 @@
     var dragging = false;
     var lastDragY = 0;
     window.addEventListener('mousedown', function (e) {
+      // Leave the newsletter form alone so its inputs can be clicked and
+      // their text selected normally.
+      if (e.target.closest('.newsletter')) return;
       dragging = true;
       lastDragY = e.clientY;
       document.body.style.userSelect = 'none';
