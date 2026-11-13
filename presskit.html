@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blunder Construction Press Kit</title>
+<meta name="description" content="Press kit for Blunder Construction, a chaotic physics-based roguelike deckbuilding blockstacker. Factsheet, logos, key art, GIFs and contact details.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Germania+One&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #030a33;
+    --navy: #0d2f47;
+    --crimson: #c9284d;
+    --cream: #fdf8e8;
+    --paper: #fffdf6;
+    --muted: #4a5170;
+    --rule: rgba(3, 10, 51, 0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  a { color: var(--crimson); font-weight: 700; }
+
+  h1, h2, h3 {
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    position: relative;
+    background: var(--navy) url('background.png') center / cover no-repeat;
+    min-height: clamp(260px, 38vw, 520px);
+    display: grid;
+    place-items: center;
+    padding: 32px 16px 48px;
+  }
+
+  .hero img.logo {
+    width: min(560px, 80vw);
+    height: auto;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+  }
+
+  .hero-label {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    background: var(--crimson);
+    color: #fff;
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    padding: 4px 22px 6px;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 4px 0 var(--ink);
+    white-space: nowrap;
+  }
+
+  /* Robbobin studio mark: a brand-blue triangle pinned to the bottom-right
+     corner of the window, with the wordmark sitting level along its bottom edge. */
+  .studio-corner {
+    --c: 220px;
+    position: fixed;
+    z-index: 20;
+    bottom: 0;
+    right: 0;
+    width: var(--c);
+    height: var(--c);
+    background: #3841ff;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  }
+
+  .studio-corner img {
+    position: absolute;
+    right: calc(var(--c) * 0.07);
+    bottom: calc(var(--c) * 0.08);
+    width: calc(var(--c) * 0.58);
+    height: auto;
+  }
+
+  @media (max-width: 600px) {
+    .studio-corner { --c: 120px; }
+  }
+
+  .back {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ---------- Layout ---------- */
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 64px 16px 80px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  }
+
+  .wrap > * { min-width: 0; }
+
+  main > section + section { margin-top: 56px; }
+
+  section h2 {
+    font-size: 38px;
+    margin-bottom: 14px;
+  }
+
+  section h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 5px;
+    margin-top: 6px;
+    background: var(--crimson);
+    border-radius: 3px;
+  }
+
+  p { margin: 0 0 14px; }
+
+  .lede {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+
+  /* ---------- Factsheet ---------- */
+
+  .factsheet {
+    position: sticky;
+    top: 24px;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 0 6px 0 var(--ink);
+    padding: 22px 22px 18px;
+  }
+
+  @media (max-width: 860px) {
+    .factsheet { position: static; }
+  }
+
+  .factsheet h2 { font-size: 30px; margin-bottom: 8px; }
+  .factsheet h2::after { display: none; }
+
+  .factsheet dl { margin: 0; }
+
+  .factsheet dt {
+    font-family: 'Germania One', system-ui, sans-serif;
+    color: var(--crimson);
+    font-size: 17px;
+    letter-spacing: 0.03em;
+    margin-top: 12px;
+  }
+
+  .factsheet dd {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .factsheet dd small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: var(--crimson);
+    text-decoration: none;
+    padding: 6px 18px 8px;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 4px 0 var(--ink);
+    text-shadow: 0 2px 0 var(--ink);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .btn:hover { transform: scale(1.05); }
+  .btn:active { transform: scale(0.96); }
+
+  .factsheet .btn {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .factsheet .btn small {
+    display: block;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 13px;
+    text-shadow: none;
+    letter-spacing: 0;
+    opacity: 0.9;
+  }
+
+  /* ---------- GIFs ---------- */
+
+  .gifs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    align-items: center;
+  }
+
+  .gifs img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- Screenshots ---------- */
+
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .shots a { display: block; }
+
+  .shots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .shots a:hover img { transform: scale(1.03); }
+
+  /* ---------- Media grids ---------- */
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .tile {
+    margin: 0;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tile .frame {
+    aspect-ratio: 4 / 3;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .tile .frame img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .tile .frame.dark { background: var(--navy); }
+  .tile .frame.cover img { width: 100%; height: 100%; object-fit: cover; }
+  .tile .frame.pad img { padding: 18px; }
+
+  .tile figcaption {
+    padding: 10px 14px 12px;
+    border-top: 3px solid var(--ink);
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .tile figcaption b { display: block; font-weight: 800; }
+
+  .tile figcaption a { font-size: 14px; margin-right: 12px; }
+
+  .tile.wide { grid-column: 1 / -1; }
+  .tile.wide .frame { aspect-ratio: 3840 / 1240; }
+
+  .note {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 14px;
+  }
+
+  /* ---------- Contact ---------- */
+
+  .contact {
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 14px;
+    padding: 26px 24px;
+  }
+
+  .contact h2 { color: #fff; }
+  .contact a { color: #ffd166; }
+  .contact p:last-child { margin-bottom: 0; }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 0 16px 40px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <a class="back" href="index.html">&larr; robbobin.com</a>
+    <div class="studio-corner"><img src="robbobin.png" alt="Robbobin"></div>
+    <img class="logo" src="logo.png" alt="Blunder Construction">
+    <div class="hero-label">PRESS KIT</div>
+  </header>
+
+  <div class="wrap">
+
+    <aside class="factsheet" aria-labelledby="facts">
+      <h2 id="facts">Factsheet</h2>
+      <dl>
+        <dt>Developer</dt>
+        <dd>Robbobin<small>Solo developer</small></dd>
+
+        <dt>Release date</dt>
+        <dd>Q3 2027</dd>
+
+        <dt>Platforms</dt>
+        <dd>PC (Steam)<small>Steam Deck support planned</small></dd>
+
+        <dt>Genre</dt>
+        <dd>Physics roguelike deckbuilder</dd>
+
+        <dt>Price</dt>
+        <dd>TBA</dd>
+
+        <dt>Website</dt>
+        <dd><a href="https://robbobin.com">robbobin.com</a></dd>
+
+        <dt>Press contact</dt>
+        <dd><a href="mailto:hello@robbobin.com">hello@robbobin.com</a></dd>
+
+        <dt>Discord</dt>
+        <!-- TODO: replace with a permanent (non-expiring) Discord invite link. -->
+        <dd>Coming soon</dd>
+      </dl>
+      <a class="btn" href="presskit/blunder-construction-presskit.zip" download>
+        Download all assets
+        <small>Logo, key art, screenshots and GIFs (.zip)</small>
+      </a>
+    </aside>
+
+    <main>
+
+      <section aria-labelledby="about">
+        <h2 id="about">About the game</h2>
+        <p class="lede">Blunder Construction is a chaotic physics-based roguelike deckbuilding blockstacker. You're a wizard responsible for building increasingly splendid luxury homes.</p>
+        <p>Each run is a series of building contracts. Levitate blocks into place with your magic wand and stack them into a tower that meets the contract's score quota. Once the quota is met, you can pull the lever to hand the building in, or keep stacking and push your luck: better buildings earn bigger rewards, but build too greedily and the whole thing comes down.</p>
+        <p>Between contracts you pick and buy rewards to grow your deck of Blocks and Magicks, then take on harder contracts with stranger modifiers: lopsided cliffs, volcano lairs, haunted graveyards. The run ends with a contract that tests every skill and synergy you've collected along the way.</p>
+      </section>
+
+      <section aria-labelledby="gifs">
+        <h2 id="gifs">GIFs</h2>
+        <div class="gifs">
+          <img src="presskit/gifs/stacking.gif" alt="The wizard levitating a block with a magic wand" loading="lazy">
+          <img src="presskit/gifs/teetering.gif" alt="A tall, wobbly tower of blocks swaying" loading="lazy">
+          <img src="presskit/gifs/tally.gif" alt="A finished building having its value tallied" loading="lazy">
+          <img src="presskit/gifs/contracts.gif" alt="A boss contract built on a giant set of scales" loading="lazy">
+        </div>
+      </section>
+
+      <!-- Previews are 1280x720 JPEGs in presskit/thumbs/ (regenerate them if
+           a screenshot changes); each one links to the full-size PNG. -->
+      <section aria-labelledby="shots">
+        <h2 id="shots">Screenshots</h2>
+        <div class="shots">
+          <a href="screenshots/screenshot.png" target="_blank"><img src="presskit/thumbs/screenshot.jpg" alt="A tall, narrow tower reaching into the sky" loading="lazy"></a>
+          <a href="screenshots/screenshot-2.png" target="_blank"><img src="presskit/thumbs/screenshot-2.jpg" alt="A towering stack of blocks in a fiery red level" loading="lazy"></a>
+          <a href="screenshots/screenshot-7.png" target="_blank"><img src="presskit/thumbs/screenshot-7.jpg" alt="Stacking blocks between hanging boulders in a desert level" loading="lazy"></a>
+          <a href="screenshots/screenshot-5.png" target="_blank"><img src="presskit/thumbs/screenshot-5.jpg" alt="A tower of blocks on fire" loading="lazy"></a>
+          <a href="screenshots/screenshot-6.png" target="_blank"><img src="presskit/thumbs/screenshot-6.jpg" alt="Two buildings balanced on a giant set of scales" loading="lazy"></a>
+          <a href="screenshots/screenshot-1.png" target="_blank"><img src="presskit/thumbs/screenshot-1.jpg" alt="Choosing a Magick from three banners" loading="lazy"></a>
+          <a href="screenshots/screenshot-3.png" target="_blank"><img src="presskit/thumbs/screenshot-3.jpg" alt="The Gnomebase shop" loading="lazy"></a>
+          <a href="screenshots/screenshot-4.png" target="_blank"><img src="presskit/thumbs/screenshot-4.jpg" alt="Choosing the next contract" loading="lazy"></a>
+        </div>
+        <p class="note">Click any screenshot for the full 2560 &times; 1440 PNG.</p>
+      </section>
+
+      <section aria-labelledby="art">
+        <h2 id="art">Logo &amp; art</h2>
+        <div class="grid">
+          <figure class="tile wide">
+            <div class="frame cover"><img src="background.png" alt="Key art: the wizard hurling a T-shaped block through the clouds with a magic wand" loading="lazy"></div>
+            <figcaption><b>Key art</b>3840 &times; 1240 PNG
+              <a href="background.png" download="blunder-construction-key-art.png">Download</a></figcaption>
+          </figure>
+          <figure class="tile">
+            <div class="frame dark pad"><img src="logo.png" alt="Blunder Construction logo" loading="lazy"></div>
+            <figcaption><b>Logo</b>1210 &times; 455 PNG, transparent
+              <a href="logo.png" download="blunder-construction-logo.png">Download</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section aria-labelledby="dev">
+        <h2 id="dev">About the developer</h2>
+        <p>Robbobin is a solo developer. Blunder Construction has been in development since July 2026, originally starting as an entry for GMTK Game Jam 2026, and is Robbobin's first solo commercial release. No generative AI is used for any of its art or sound.</p>
+      </section>
+
+      <section aria-labelledby="contact">
+        <div class="contact">
+          <h2 id="contact">Get in touch</h2>
+          <p>For press, review keys, streaming or interview requests, email <a href="mailto:hello@robbobin.com">hello@robbobin.com</a>.</p>
+          <p>You're welcome to use any of the material on this page in any coverage of the game.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>&copy; 2026 Robbobin. Blunder Construction is in development; details may change.</footer>
+
+</body>
+</html>

@@ -21,12 +21,12 @@
     font-family: 'Germania One', system-ui, sans-serif;
   }
 
-  /* The wizard cursor companion is a mouse-only affectation; on touch
-     devices there's no real cursor to hide or replace. */
-  @media (hover: hover) and (pointer: fine) {
-    html, body {
-      cursor: none;
-    }
+  /* The real cursor is hidden only once the wizard cursor companion has
+     loaded (the script adds .wizard-cursor). If it never loads — on touch
+     devices, or when the page is opened offline from file://, where the
+     Spine assets can't be fetched — the normal cursor stays visible. */
+  html.wizard-cursor, html.wizard-cursor body {
+    cursor: none;
   }
 
   .stage {
@@ -144,7 +144,7 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .demo-btn {
+    html.wizard-cursor .demo-btn {
       cursor: none;
     }
   }
@@ -238,6 +238,58 @@
     }
   }
 
+  .press-link {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
+    font-family: 'Germania One', system-ui, sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 2px 0 #030a33;
+    background: #c9284d;
+    padding: 4px 16px 6px;
+    border: 3px solid #030a33;
+    border-radius: 10px;
+    box-shadow: 0 4px 0 #030a33;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .press-link:hover { transform: scale(1.06); }
+  .press-link:active { transform: scale(0.94); }
+
+  .press-link { cursor: pointer; }
+  html.wizard-cursor .press-link { cursor: none; }
+
+  /* Robbobin studio mark: a brand-blue triangle pinned to the bottom-right
+     corner of the window, with the wordmark sitting level along its bottom edge. */
+  .studio-corner {
+    --c: 220px;
+    position: fixed;
+    z-index: 5;
+    bottom: 0;
+    right: 0;
+    width: var(--c);
+    height: var(--c);
+    background: #3841ff;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    pointer-events: none;
+  }
+
+  .studio-corner img {
+    position: absolute;
+    right: calc(var(--c) * 0.07);
+    bottom: calc(var(--c) * 0.08);
+    width: calc(var(--c) * 0.58);
+    height: auto;
+  }
+
+  @media (max-width: 600px) {
+    .studio-corner { --c: 120px; }
+  }
+
   #cursor-companion {
     position: fixed;
     inset: 0;
@@ -257,6 +309,10 @@
   <div class="stage">
     <img class="bg" src="background.png" alt="">
   </div>
+
+  <a class="press-link" href="presskit.html">PRESS KIT</a>
+
+  <div class="studio-corner"><img src="robbobin.png" alt="Robbobin"></div>
 
   <div class="logo-wrap">
     <img class="logo" src="logo.png" alt="Blunder Construction">
@@ -371,6 +427,7 @@
       showLoading: false,
       success: function (player) {
         wizard = player;
+        document.documentElement.classList.add('wizard-cursor');
 
         // The character only ever renders at ~90px tall, but the canvas
         // spans the full viewport, so full device-pixel-ratio resolution
